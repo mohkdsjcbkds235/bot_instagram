@@ -9,7 +9,10 @@ app.use(bodyParser.json());
 const PAGE_ACCESS_TOKEN = "IGAARWboxCWU1BZAE5ZARWNQVElEREE0OG1WaVRZAZAGFaNmxGMFdMQTRKOGtEeXg4bkVFeFNDdnFwLTU5aW50LW5FQ2dmZAWZAGT25xV2hRSV81c3o2NXAtZAXRvRHhydGJQXzN6WDA0SUFKRVlZAS3JCdnhuaExpejI0c3hhT3dWOVZAsWQZDZD";
 const VERIFY_TOKEN = "my_custom_verify_token";
 
-// التحقق من Webhook
+// 🔵 إعدادات فيسبوك
+const FACEBOOK_PAGE_ID = "760975953758391";
+const FACEBOOK_PAGE_ACCESS_TOKEN = "EAAHa6OnUvf8BPIStZC1aWp2JxJQV6SSVfGVf6ovs01xQ9FTD32OfjSo8zi4u2ZAZC9XHRbnZClmjErPtpYNCFSrbZCMkEv5ZA1nmjlIIXBR3e7lK0E3jBGzgWlvF5r1iqW2I4gL5LfMdqW21ofkuNrctDtnvaF3OaQmHZARnblu2V9ZBuZA1v5yDjRWwBg7EjgKvlbOa7ZCIp7px1PxZA9GLIxhRRFLbrUqErpYAqBlHVEZD";
+
 app.get('/webhook', (req, res) => {
   const mode = req.query['hub.mode'];
   const token = req.query['hub.verify_token'];
@@ -23,7 +26,6 @@ app.get('/webhook', (req, res) => {
   res.sendStatus(403);
 });
 
-// استقبال رسائل Instagram
 app.post('/webhook', async (req, res) => {
   console.log("📦 Payload:", JSON.stringify(req.body, null, 2));
 
@@ -36,13 +38,11 @@ app.post('/webhook', async (req, res) => {
 
           if (!senderId) return;
 
-          // معالجة رسالة نصية
           if (event.message && event.message.text) {
             await sendGenericTemplate(senderId);
             return;
           }
 
-          // معالجة مرفقات
           if (event.message && event.message.attachments) {
             let reelFound = false;
 
@@ -80,7 +80,6 @@ app.post('/webhook', async (req, res) => {
   res.sendStatus(404);
 });
 
-// إرسال قالب Generic
 async function sendGenericTemplate(recipientId) {
   try {
     await axios.post(
@@ -136,7 +135,6 @@ async function sendGenericTemplate(recipientId) {
   }
 }
 
-// إرسال فيديو
 async function sendInstagramReel(senderId, url) {
   try {
     const sendResponse = await axios.post(`https://graph.instagram.com/v19.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`, {
@@ -152,6 +150,8 @@ async function sendInstagramReel(senderId, url) {
 
     if (sendResponse.status === 200) {
       console.log("✅ تم إرسال الفيديو بنجاح.");
+      // 🆕 النشر على صفحة فيسبوك
+      await postVideoToFacebook(url, "📥 ريلز جديد تم تحميله عبر البوت.");
     } else {
       console.log("❌ فشل في إرسال الفيديو.");
       await sendReply(senderId, "❌ حدث خطأ أثناء محاولة إرسال الفيديو.");
@@ -162,7 +162,6 @@ async function sendInstagramReel(senderId, url) {
   }
 }
 
-// إرسال رسالة نصية
 async function sendReply(recipientId, messageText) {
   try {
     await axios.post(`https://graph.instagram.com/v19.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`, {
@@ -172,6 +171,33 @@ async function sendReply(recipientId, messageText) {
     });
   } catch (err) {
     console.error("❌ فشل في إرسال الرسالة:", err.response ? err.response.data : err.message);
+  }
+}
+
+// 🆕 دالة نشر الفيديو على فيسبوك
+async function postVideoToFacebook(videoUrl, caption = "📲 فيديو تم تحميله تلقائياً") {
+  try {
+    const response = await axios.post(
+      `https://graph.facebook.com/${FACEBOOK_PAGE_ID}/videos`,
+      new URLSearchParams({
+        file_url: videoUrl,
+        description: caption,
+        access_token: FACEBOOK_PAGE_ACCESS_TOKEN
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }
+    );
+
+    if (response.data && response.data.id) {
+      console.log("✅ تم نشر الفيديو على الصفحة بنجاح. Video ID:", response.data.id);
+    } else {
+      console.log("⚠️ تم إرسال الطلب ولكن ما تمش النشر.");
+    }
+  } catch (err) {
+    console.error("❌ خطأ أثناء نشر الفيديو على صفحة فيسبوك:", err.response ? err.response.data : err.message);
   }
 }
 
