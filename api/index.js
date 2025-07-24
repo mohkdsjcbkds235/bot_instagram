@@ -1,39 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
-const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
 app.use(bodyParser.json());
 
-const PAGE_ACCESS_TOKEN = "IGAARWboxCWU1BZAE5ZARWNQVElEREE0OG1WaVRZAZAGFaNmxGMFdMQTRKOGtEeXg4bkVFeFNDdnFwLTU5aW50LW5FQ2dmZAWZAGT25xV2hRSV81c3o2NXAtZAXRvRHhydGJQXzN6WDA0SUFKRVlZAS3JCdnhuaExpejI0c3hhT3dWOVZAsWQZDZD"; // عوّضها بالتوكن ديالك
-const VERIFY_TOKEN = "my_custom_verify_token"; // عوّضها بالتوكن ديالك
-
-
-// تحميل وحفظ قائمة المستخدمين المؤكدين
-const filePath = './confirmedUsers.json';
-
-function loadConfirmedUsers() {
-  try {
-    const data = fs.readFileSync(filePath);
-    return new Set(JSON.parse(data));
-  } catch (error) {
-    console.error("❌ خطأ في قراءة ملف المستخدمين:", error);
-    return new Set();
-  }
-}
-
-function saveConfirmedUsers(set) {
-  try {
-    const array = Array.from(set);
-    fs.writeFileSync(filePath, JSON.stringify(array, null, 2));
-  } catch (error) {
-    console.error("❌ خطأ في حفظ ملف المستخدمين:", error);
-  }
-}
-
-const confirmedUsers = loadConfirmedUsers();
+const PAGE_ACCESS_TOKEN = "IGAARWboxCWU1BZAE5ZARWNQVElEREE0OG1WaVRZAZAGFaNmxGMFdMQTRKOGtEeXg4bkVFeFNDdnFwLTU5aW50LW5FQ2dmZAWZAGT25xV2hRSV81c3o2NXAtZAXRvRHhydGJQXzN6WDA0SUFKRVlZAS3JCdnhuaExpejI0c3hhT3dWOVZAsWQZDZD";
+const VERIFY_TOKEN = "my_custom_verify_token";
 
 // التحقق من Webhook
 app.get('/webhook', (req, res) => {
@@ -50,7 +24,6 @@ app.get('/webhook', (req, res) => {
 });
 
 // استقبال رسائل Instagram
-// استقبال رسائل Instagram
 app.post('/webhook', async (req, res) => {
   console.log("📦 Payload:", JSON.stringify(req.body, null, 2));
 
@@ -65,16 +38,6 @@ app.post('/webhook', async (req, res) => {
 
           // معالجة رسالة نصية
           if (event.message && event.message.text) {
-            const userMessage = event.message.text.trim().toLowerCase();
-
-            if (userMessage === "تم") {
-              confirmedUsers.add(senderId);
-              saveConfirmedUsers(confirmedUsers);
-              await sendReply(senderId, "✅ شكراً على المتابعة! الآن يمكنك إرسال ريلز لتحميله.");
-              return;
-            }
-
-            // إرسال قالب Generic عند إرسال أي رسالة غير الريلز
             await sendGenericTemplate(senderId);
             return;
           }
@@ -87,19 +50,12 @@ app.post('/webhook', async (req, res) => {
               if (attachment.type === 'ig_reel' && attachment.payload && attachment.payload.url) {
                 reelFound = true;
 
-                if (!confirmedUsers.has(senderId)) {
-                  await sendFollowRequest(senderId);
-                  await sendReply(senderId, "📢 بعد المتابعة، أرسل كلمة 'تم' لمتابعة تحميل الريلز.");
-                  return;
-                }
-
-                await sendReaction(senderId, messageId, "📥");
                 await sendReply(senderId, "⏳ يتم تحميل ريلز...");
 
                 try {
                   const reelUrl = attachment.payload.url;
                   await sendInstagramReel(senderId, reelUrl);
-                  await sendReply(senderId, "تم تحميل الريلز بنجاح 📥");
+                  await sendReply(senderId, "✅ تم تحميل الريلز بنجاح");
                 } catch (err) {
                   await sendReply(senderId, "❌ وقع خطأ أثناء تحميل الريلز.");
                 }
@@ -109,11 +65,9 @@ app.post('/webhook', async (req, res) => {
             }
 
             if (!reelFound) {
-              await sendReaction(senderId, messageId, "❌");
               await sendReply(senderId, "🚨 المرفق غير مدعوم. يُرجى إرسال مقطع ريلز فقط.");
             }
           } else {
-            await sendReaction(senderId, messageId, "❌");
             await sendReply(senderId, "📩 يُرجى إرسال مقطع ريلز ليتم تحميله.");
           }
         });
@@ -154,12 +108,12 @@ async function sendGenericTemplate(recipientId) {
                       title: "شرح البوت 🎈"
                     },
                     {
-                       type: "web_url",
+                      type: "web_url",
                       url: "https://www.instagram.com/li9ama_simo",
                       title: "مطور البوت 🎴"
                     },
                     {
-                       type: "web_url",
+                      type: "web_url",
                       url: "https://whatsapp.com/channel/0029VbAgby79sBICj1Eg7h0h",
                       title: "📞 WhatsApp Channel"
                     }
@@ -181,7 +135,6 @@ async function sendGenericTemplate(recipientId) {
     );
   }
 }
-
 
 // إرسال فيديو
 async function sendInstagramReel(senderId, url) {
@@ -219,64 +172,6 @@ async function sendReply(recipientId, messageText) {
     });
   } catch (err) {
     console.error("❌ فشل في إرسال الرسالة:", err.response ? err.response.data : err.message);
-  }
-}
-//SDSS
-async function sendReaction(recipientId, messageId, reaction = "love") {
-  try {
-    await axios.post(
-      `https://graph.instagram.com/v19.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`,
-      new URLSearchParams({
-        recipient: JSON.stringify({ id: recipientId }),
-        sender_action: "react",
-        payload: JSON.stringify({
-          message_id: messageId,
-          reaction: reaction
-        })
-      }),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        }
-      }
-    );
-
-    console.log(`📌 Reaction "${reaction}" تم إرساله بنجاح.`);
-  } catch (err) {
-    console.error(
-      "❌ خطأ في إرسال التفاعل:",
-      err.response ? err.response.data : err.message
-    );
-  }
-}
-
-
-
-
-// إرسال زر متابعة
-async function sendFollowRequest(recipientId) {
-  try {
-    await axios.post(`https://graph.instagram.com/v19.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`, {
-      recipient: { id: recipientId },
-      message: {
-        attachment: {
-          type: "template",
-          payload: {
-            template_type: "button",
-            text: "🚫 قبل استخدام البوت، يرجى متابعة حسابنا على إنستغرام لمواصلة الخدمة.",
-            buttons: [
-              {
-                type: "web_url",
-                url: "https://www.instagram.com/am_mo111_25_/", // 🔗 ضع رابط حسابك هنا
-                title: "🔔 متابعة الحساب"
-              }
-            ]
-          }
-        }
-      }
-    });
-  } catch (err) {
-    console.error("❌ خطأ في إرسال زر المتابعة:", err.response ? err.response.data : err.message);
   }
 }
 
