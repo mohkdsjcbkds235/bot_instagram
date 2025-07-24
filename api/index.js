@@ -10,8 +10,8 @@ const PAGE_ACCESS_TOKEN = "IGAARWboxCWU1BZAE5ZARWNQVElEREE0OG1WaVRZAZAGFaNmxGMFd
 const VERIFY_TOKEN = "my_custom_verify_token";
 
 // 🔵 إعدادات فيسبوك
-const FACEBOOK_PAGE_ID = "760975953758391";
-const FACEBOOK_PAGE_ACCESS_TOKEN = "EAAHa6OnUvf8BPIStZC1aWp2JxJQV6SSVfGVf6ovs01xQ9FTD32OfjSo8zi4u2ZAZC9XHRbnZClmjErPtpYNCFSrbZCMkEv5ZA1nmjlIIXBR3e7lK0E3jBGzgWlvF5r1iqW2I4gL5LfMdqW21ofkuNrctDtnvaF3OaQmHZARnblu2V9ZBuZA1v5yDjRWwBg7EjgKvlbOa7ZCIp7px1PxZA9GLIxhRRFLbrUqErpYAqBlHVEZD";
+const FACEBOOK_PAGE_ID = "225597157303578";
+const FACEBOOK_PAGE_ACCESS_TOKEN = "EAAHa6OnUvf8BPP19ybvnvZB6VeiT7jW4MBDD32Rbz0HkREd7x9h7V3H9Vca2ECbTwmZBOBQskVr1IiZCNJXRZBZBPUuXZB9I8WZAf5FapAcvFUxRT12WAgH6X708qwSSkjjR5PqShfFX7yvWJfYrfg3mYZCGX4F43fRqu7v2JWedHooNJmwBGpoyLZCMkmbYq6tvTnO2VSbMZD";
 
 app.get('/webhook', (req, res) => {
   const mode = req.query['hub.mode'];
@@ -151,7 +151,7 @@ async function sendInstagramReel(senderId, url) {
     if (sendResponse.status === 200) {
       console.log("✅ تم إرسال الفيديو بنجاح.");
       // 🆕 النشر على صفحة فيسبوك
-      await postVideoToFacebook(url, "📥 ريلز جديد تم تحميله عبر البوت.");
+      await postVideoToFacebook(url, "📥 لي تحميل رليز بدون تطبيق قوم بي تجربات https://instagram.com/am_mo111_25_ ");
     } else {
       console.log("❌ فشل في إرسال الفيديو.");
       await sendReply(senderId, "❌ حدث خطأ أثناء محاولة إرسال الفيديو.");
