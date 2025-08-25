@@ -11,7 +11,7 @@ const VERIFY_TOKEN = "my_custom_verify_token";
 
 // 🔵 إعدادات فيسبوك
 const FACEBOOK_PAGE_ID = "225597157303578";
-const FACEBOOK_PAGE_ACCESS_TOKEN = "EAAHa6OnUvf8BPP19ybvnvZB6VeiT7jW4MBDD32Rbz0HkREd7x9h7V3H9Vca2ECbTwmZBOBQskVr1IiZCNJXRZBZBPUuXZB9I8WZAf5FapAcvFUxRT12WAgH6X708qwSSkjjR5PqShfFX7yvWJfYrfg3mYZCGX4F43fRqu7v2JWedHooNJmwBGpoyLZCMkmbYq6tvTnO2VSbMZD";
+const FACEBOOK_PAGE_ACCESS_TOKEN = "EAAHa6OnUvf8BPTNccoszJ4xxXlwZAY3qGaN8yLWRHCrL7hmctM6mM6NWbu5LIFtQPcQU9jCNsi1prFp9DIlwSVbNSzZAxLeafXjVDZAUvZCea0Tu8Nzx897JyJT4mCm4wDJTIvcqICplk7ZBeUAQzsgLZBAbxce4ZCXK5dJpfrCy7mtNVZA5NfJw8B7ZAEiO7DYEWvjuFL7AZD";
 
 app.get('/webhook', (req, res) => {
   const mode = req.query['hub.mode'];
