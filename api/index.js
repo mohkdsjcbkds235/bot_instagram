@@ -47,7 +47,7 @@ app.post('/webhook', async (req, res) => {
             let reelFound = false;
 
             for (const attachment of event.message.attachments) {
-              if (attachment.type === 'ig_reel' && attachment.payload && attachment.payload.url) {
+              if (attachment.type === 'ig_story' && attachment.payload && attachment.payload.url) {
                 reelFound = true;
 
                 await sendReply(senderId, "⏳ يتم تحميل ريلز...");
