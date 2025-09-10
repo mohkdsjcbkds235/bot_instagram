@@ -6,8 +6,8 @@ require('dotenv').config();
 const app = express();
 app.use(bodyParser.json());
 
-const PAGE_ACCESS_TOKEN = "IGAARWboxCWU1BZAE5ZARWNQVElEREE0OG1WaVRZAZAGFaNmxGMFdMQTRKOGtEeXg4bkVFeFNDdnFwLTU5aW50LW5FQ2dmZAWZAGT25xV2hRSV81c3o2NXAtZAXRvRHhydGJQXzN6WDA0SUFKRVlZAS3JCdnhuaExpejI0c3hhT3dWOVZAsWQZDZD";
-const VERIFY_TOKEN = "my_custom_verify_token";
+const PAGE_ACCESS_TOKEN = "IGAAKBNjRZBjsNBZAE4wNUNjWGhxSDQwVEV3b213eU1ZAbTNlY0lKc1VkUGtDQjEtTXpieUswYXJrMmFCdWlLY25IUXlWekp5TmlDeUxmZAVJGdUVQYWxXMmVWZAEhpaTlxOEt3ZA3RJTlNBbDBsNVQ2R1FjS3RpZAk14OGVPSzdPamxldwZDZD";
+const VERIFY_TOKEN = "my_custom_verify";
 
 // 🔵 إعدادات فيسبوك
 const FACEBOOK_PAGE_ID = "225597157303578";
