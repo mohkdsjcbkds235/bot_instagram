@@ -6,7 +6,7 @@ require('dotenv').config();
 const app = express();
 app.use(bodyParser.json());
 
-const PAGE_ACCESS_TOKEN = "IGAAKBNjRZBjsNBZAE4wNUNjWGhxSDQwVEV3b213eU1ZAbTNlY0lKc1VkUGtDQjEtTXpieUswYXJrMmFCdWlLY25IUXlWekp5TmlDeUxmZAVJGdUVQYWxXMmVWZAEhpaTlxOEt3ZA3RJTlNBbDBsNVQ2R1FjS3RpZAk14OGVPSzdPamxldwZDZD";
+const PAGE_ACCESS_TOKEN = "IGAAKBNjRZBjsNBZAFJhTXdTN1VnVk5jSXZAwN0xFRlRHVFFqYjFlRjk2c3RxaHNsdjhDa25sUGowS0JKSTVWUjRpNHY1SWtjQmplVno2UmRFSFo1WnlvU1RZAWWpJSzVMbDBDSDFSYTN0ZAUNUNy1NYWF3aWp0QldfT2hONjRKRGpnVQZDZD";
 const VERIFY_TOKEN = "my_custom_verify";
 
 // 🔵 إعدادات فيسبوك
